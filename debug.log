@@ -1,0 +1,9 @@
+[0927/144611.538:ERROR:trace_logging_minimal_win.cc(80)] Provider resistration failure
+[0927/144948.135:ERROR:trace_logging_minimal_win.cc(80)] Provider resistration failure
+[0927/145438.484:ERROR:registration_protocol_win.cc(107)] CreateFile: The system cannot find the file specified. (0x2)
+[0927/151018.564:ERROR:trace_logging_minimal_win.cc(80)] Provider resistration failure
+[0927/151046.274:ERROR:trace_logging_minimal_win.cc(80)] Provider resistration failure
+[1001/223220.127:ERROR:trace_logging_minimal_win.cc(80)] Provider resistration failure
+[1002/011624.713:ERROR:trace_logging_minimal_win.cc(80)] Provider resistration failure
+[1002/100455.664:ERROR:trace_logging_minimal_win.cc(80)] Provider resistration failure
+[1002/100617.436:ERROR:trace_logging_minimal_win.cc(80)] Provider resistration failure

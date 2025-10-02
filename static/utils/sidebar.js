@@ -1,0 +1,1 @@
+const sidebarLinks=document.querySelectorAll(".sidebar-link");sidebarLinks.forEach(e=>{console.log(e),e.addEventListener("click",()=>{e.classList.add("active")})})

@@ -1,0 +1,1 @@
+function changeBorderColor(e){e.classList.remove("input-safe"),e.classList.add("input-warning")}function updateBorderColor(e){e.classList.remove("input-warning"),e.classList.add("input-safe")}

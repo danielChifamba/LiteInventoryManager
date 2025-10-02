@@ -1,0 +1,17 @@
+{% extends "components/main/base.html" %}
+{% load static %}
+{% block customCSS %}
+<link rel=stylesheet href="{% static 'styles/table.css' %}"><link rel=stylesheet href="{% static 'styles/products.css' %}">{% endblock customCSS %}
+{% block title %}<title>{{ business.business_name }} - Expenses</title>{% endblock title %}
+{% block content %}<main>{% include 'components/main/alert.html' %}<h1 class=title>Expenses</h1><hr><div class=container-fluid><div class="container action d-flex gap-2 justify-content-end"><button class="btn btn-primary mb-3" data-bs-toggle=modal data-bs-target=#addExpenseModal>Add Expense</button>
+{% comment %} <a class="btn btn-success mb-3" onclick=triggerFileUpload()>Import</a><form id=upload-form method=post enctype=multipart/form-data action="{% url 'dashboard:import_products' %}">{% csrf_token %}
+<input type=file name=file id=file-input accept=.xls class='form-control mt-3' style=display:none></form><input type=file name=file accept=.xls>
+<a href="{% url 'dashboard:export_products' %}" class="btn btn-warning mb-3">Export</a> {% endcomment %}</div><div class="container-fluid rounded-4 p-2"><div class="container d-flex align-items-center justify-content-end my-2"><form class="d-flex position-relative" role=search><input class="form-control me-2" type=search placeholder=Search aria-label=Search></form></div><table class="table table-striped border">{% if expenses %}<thead class=thead-primary><tr><th>Expense ID<th>Category<th>Description<th>Amount<th>Receipt<th>Action<tbody>{% for expense in expenses %}<tr><td>{{ expense.expense_id }}<td>{{ expense.category }}<td class="desc position-relative">{{ expense.description|truncatechars:20 }}<ul class="pop description"><p class=lead>{{ expense.description }}</ul><td>{{ business.currency_symbol }}{{ expense.amount }}<td><form hx-post="{% url 'dashboard:get_expense_image' expense.expense_id %}" hx-target=#receiptViewContainer>{% csrf_token %}
+<button class="btn btn-sm info action" data-bs-toggle=modal data-bs-target=#receiptViewModal><i class="bi bi-info-circle"></i></button></form><td class="d-flex gap-1"><form hx-post="{% url 'dashboard:get_expense' expense.expense_id %}" hx-target=#updateExpenseContainer>{% csrf_token %}
+<button class="btn btn-sm edit action" data-bs-toggle=modal data-bs-target=#updateExpenseModal><i class="bi bi-pencil color-warning"></i></button></form><form hx-post="{% url 'dashboard:get_expense_delete' expense.expense_id %}" hx-target=#deleteExpenseContainer>{% csrf_token %}
+<button class="btn btn-sm delete action" data-bs-toggle=modal data-bs-target=#warningModal><i class="bi bi-trash color-danger"></i></button></form>{% endfor %}
+{% else %}<div class="d-flex align-items-center justify-content-center p-2 rounded-3 bg-grey"><div class=lead>No expenses available</div></div>{% endif %}</table></div></div></main>{% include 'components/dashboard/expensesModal.html' %}
+{% endblock content %}
+{% block customJS %}
+{% comment %} <script src="{% static 'utils/product.js' %}"></script>{% endcomment %}
+{% endblock customJS %}

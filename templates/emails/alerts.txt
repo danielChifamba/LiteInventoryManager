@@ -1,0 +1,22 @@
+{{ business.name|default:"POS System" }} - System Alerts
+{{ date }}
+================================================================
+
+{{ total_alerts }} NEW ALERT{{ total_alerts|pluralize|upper }} REQUIRING ATTENTION
+
+{% for alert_type, alerts in alert_groups.items %}
+{% if alert_type == 'low_stock' %}LOW STOCK ALERTS{% elif alert_type == 'out_of_stock' %}OUT OF STOCK ALERTS{% elif alert_type == 'high_expense' %}HIGH EXPENSE ALERTS{% else %}SYSTEM ALERTS{% endif %} ({{ alerts|length }})
+----------------------------------------------------------------
+{% for alert in alerts %}
+• {{ alert.title }}
+  {{ alert.message }}
+  Time: {{ alert.created_at|date:"M d, Y H:i" }}
+
+{% endfor %}
+{% endfor %}
+
+================================================================
+Please review these alerts and take appropriate action.
+
+Alert notification sent automatically
+{{ business.name|default:"Your Business" }} - Stay informed!

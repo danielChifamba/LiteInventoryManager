@@ -1,0 +1,22 @@
+<div class="container col-10 mb-3"><div class="card rounded-4 shadow-sm"><div class=card-body><h5 class="card-title d-flex align-items-center justify-content-between">Sales Data</h5><table class="table table-striped text-center border">{% if sales_by_date %}<thead class=thead-primary><tr><th>Date<th>Total Sales<th>Total Transactions<tbody>{% for sale in sales_by_date %}<tr><td>{{ sale.date }}<td>{{ business.currency_symbol }}{{ sale.total_sales|floatformat:2 }}<td>{{ sale.total_transactions }}
+{% endfor %}
+{% else %}<div class="d-flex align-items-center justify-content-center p-2 rounded-3 bg-grey"><div class=lead>No Sales Data Available</div></div>{% endif %}</table></div></div></div><div class="container col-10 mb-3"><div class="card rounded-4 shadow-sm"><div class=card-body><h5 class="card-title d-flex align-items-center justify-content-between">Sales by Payment Method</h5><table class="table table-striped text-center border">{% if payment_methods %}<thead class=thead-primary><tr><th>Payment Method<th>Total Sales<th>Total Transactions<tbody>{% for payment_method in payment_methods %}<tr><td>{{ payment_method.payment_method }}<td>{{ business.currency_symbol }}{{ payment_method.total|floatformat:2 }}<td>{{ payment_method.count }}
+{% endfor %}
+{% else %}<div class="d-flex align-items-center justify-content-center p-2 rounded-3 bg-grey"><div class=lead>No Sales Data Available</div></div>{% endif %}</table></div></div></div><div class="container col-10 mb-3"><div class="card rounded-4 shadow-sm"><div class=card-body><h5 class="card-title d-flex align-items-center justify-content-between">Cashier Perfomance</h5><table class="table table-striped text-center border">{% if cashier_performance %}<thead class=thead-primary><tr><th>Cashier<th>Total Sales<th>Total Transactions<tbody>{% for cashier in cashier_performance %}<tr><td>{{ cashier.cashier__user__first_name }} {{ cashier.cashier__user__last_name }}<td>{{ cashier.total_sales|floatformat:2 }}<td>{{ cashier.total_transactions }}
+{% endfor %}
+{% else %}<div class="d-flex align-items-center justify-content-center p-2 rounded-3 bg-grey"><div class=lead>No Sales Data Available</div></div>{% endif %}</table></div></div></div><div class="container d-flex flex-column align-items-center justify-content-end"><h4 class=title>Totals</h4><p class=lead>Total Sales:
+<span class="lead fw-bold">{% if totals.total_sales %}
+{{ business.currency_symbol }}{{ totals.total_sales|floatformat:2 }}
+{% else %}
+null
+{% endif %}</span><p class=lead>Total Transactions:
+<span class="lead fw-bold">{% if totals.total_transactions > 0 %}
+{{ totals.total_transactions }}
+{% else %}
+null
+{% endif %}</span><p class=lead>Average Transactions:
+<span class="lead fw-bold">{% if totals.avg_transaction %}
+{{ business.currency_symbol }}{{ totals.avg_transaction|floatformat:2 }}
+{% else %}
+null
+{% endif %}</span></div>

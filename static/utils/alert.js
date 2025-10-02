@@ -1,0 +1,1 @@
+$(document).ready(function(){setTimeout(function(){$(".alert.alert-success").alert("close")},3e3),setTimeout(function(){$(".alert.alert-info").alert("close")},3e3)})

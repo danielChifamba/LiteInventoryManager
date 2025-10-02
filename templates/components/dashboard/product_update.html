@@ -1,0 +1,8 @@
+<form class="d-flex flex-column" method=post action=/dashboard/products/update/{{product.sku}}>{% csrf_token %}<div class=mb-3><label for=name class=form-label>Name</label>
+{{ editForm.name }}</div><div class=mb-3><label for=category class=form-label>Category</label>
+{{ editForm.category }}</div><div class=mb-3><label for=description class=form-label>Description</label>
+{{ editForm.description }}</div><div class="d-flex row align-items-center mb-3 justify-content-between"><div class=col><label for=cost class=form-label>Cost Price</label>
+{{ editForm.cost_price }}</div><div class=col><label for=sell class=form-label>Selling Price</label>
+{{ editForm.selling_price }}</div></div><div class="d-flex row align-items-center mb-3 justify-content-between"><div class=col><label for=quantity class=form-label>Quantity</label>
+{{ editForm.stock_quantity }}</div><div class=col><label for=quantity class=form-label>Minimum Stock Alert Level</label>
+{{ editForm.min_stock_level }}</div></div><button class="btn btn-success">Update Product</button></form>

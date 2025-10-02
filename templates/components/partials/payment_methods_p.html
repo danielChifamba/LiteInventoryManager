@@ -1,0 +1,8 @@
+<div class=payment-method><button class="payment-btn {% if selected_payment_method == 'cash' or not selected_payment_method %}active{% endif %}" hx-post="{% url 'pos:htmx_select_payment' %}" hx-target=#payment-methods hx-swap=innerHTML hx-vals='{"payment_method": "cash"}' hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+Cash
+</button>
+<button class="payment-btn {% if selected_payment_method == 'card' %}active{% endif %}" hx-post="{% url 'pos:htmx_select_payment' %}" hx-target=#payment-methods hx-swap=innerHTML hx-vals='{"payment_method": "card"}' hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+Card
+</button>
+<button class="payment-btn {% if selected_payment_method == 'mobile' %}active{% endif %}" hx-post="{% url 'pos:htmx_select_payment' %}" hx-target=#payment-methods hx-swap=innerHTML hx-vals='{"payment_method": "mobile"}' hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+Mobile</button></div>

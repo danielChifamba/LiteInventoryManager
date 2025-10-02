@@ -1,0 +1,1 @@
+function printReceipt(){const receiptModal=document.getElementById('receiptContent');const receiptContent=receiptModal.innerHTML;const printWindow=window.open('','_blank');printWindow.document.write(receiptContent);printWindow.print();printWindow.onafterprint=()=>{printWindow.close()}}

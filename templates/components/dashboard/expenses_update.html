@@ -1,0 +1,5 @@
+<form class="d-flex flex-column" method=post enctype=multipart/form-data action=/dashboard/expenses/update/{{expense.expense_id}}>{% csrf_token %}<div class=mb-3><label for=category class=form-label>Category</label>
+{{ editForm.category }}</div><div class=mb-3><label for=description class=form-label>Description</label>
+{{ editForm.description }}</div><div class=mb-3><label for=amount class=form-label>Amount</label>
+{{ editForm.amount }}</div><div class=mb-3><label for=quantity class=form-label>Receipt Image <a target=_blank href="{{ expense.receipt_image.url }}">preview current image</a></label>
+{{ editForm.receipt_image }}</div><button class="btn btn-success">Update Expense</button></form>

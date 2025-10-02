@@ -1,0 +1,1 @@
+<form method=post action=/dashboard/products/delete/{{product.sku}}>{% csrf_token %}<h5 class="title text-center mb-3">Are you sure you want to delete <span class=text-decoration-underline id=name>{{product.name}}</span>?</h5><button class="btn btn-danger w-100">Delete</button></form>

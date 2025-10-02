@@ -1,0 +1,1 @@
+function triggerFileUpload(){document.getElementById("file-input").click(),document.getElementById("file-input").addEventListener("change",function(){this.isDefaultNamespace.length>0&&document.getElementById("upload-form").submit()})}

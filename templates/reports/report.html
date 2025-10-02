@@ -1,0 +1,477 @@
+{% extends "components/main/base.html" %}
+
+{% load static %}
+
+{% block customCSS %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/table.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'styles/products.css' %}">
+{% endblock customCSS %}
+
+{% block title %}
+    <title>{{ business.business_name }} - Reports</title>
+{% endblock title %}
+
+
+{% block content %}
+<main>
+    <h1 class="title">Reports</h1>
+    <hr>
+
+    {% include 'components/main/alert.html' %}
+
+    <div class="container-fluid">
+        <div class="container action d-flex gap-2 justify-content-end">
+            <a href="{% url 'reports:downloadDailyReport' %}" class="btn btn-success mb-3">Get Daily Report</a>
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#dateFilterReportsModal">Get Full Report</button>
+
+            <!-- <button class="btn btn-success mb-3">Stock Movement</button>
+            
+            <button class="btn btn-warning mb-3">Seller Perfomance</button>
+
+            <button class="btn btn-secondary mb-3">Complete</button> -->
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="container-fluid rounded-4 p-3">
+            <nav class="fw-bold">
+                <div class="nav nav-tabs mb-3" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab" aria-controls="reports" aria-selected="true">Reports</button>
+
+                    <button class="nav-link" id="sales-report-tab" data-bs-toggle="tab" data-bs-target="#sales-report" type="button" role="tab" aria-controls="sales-report" aria-selected="false">Sales Report (By Date)</button>
+
+                    <button class="nav-link" id="inventory-report-tab" data-bs-toggle="tab" data-bs-target="#inventory-report" type="button" role="tab" aria-controls="inventory-report" aria-selected="false">Inventory Report</button>
+
+                    <button class="nav-link" id="analytics-tab" data-bs-toggle="tab" data-bs-target="#analytics" type="button" role="tab" aria-controls="analytics-report" aria-selected="false">Analytics</button>
+
+                    <button class="nav-link" id="receipts-tab" data-bs-toggle="tab" data-bs-target="#receipts" type="button" role="tab" aria-controls="receipts" aria-selected="false">Receipts</button>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                    <!-- Charts View Start -->
+                    <div class="container-fluid row w-100 d-flex align-items-center justify-content-center">
+                        <!-- sales summary container -->
+                        <div class="container col-10 mb-3">
+                            <div class="card rounded-4 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title d-flex align-items-center justify-content-between">
+                                        Sales Summary
+                                        <a href="#" class="btn btn-success" title="Sales Summary Report Download"><i class="bi bi-download"></i></a>
+                                    </h5>
+                                    <canvas id="salesSummaryChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- product total value container -->
+                        <div class="container col-10 mb-3">
+                            <div class="card rounded-4 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title d-flex align-items-center justify-content-between">
+                                        Top Products This Month
+                                        <button class="btn btn-primary" title="Top Products Report Download"><i class="bi bi-download"></i></button>
+                                    </h5>
+                                    <canvas id="topProductsChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Charts View End -->
+
+                        <div class="container col-10 mb-3">
+                            <div class="card rounded-4 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title d-flex align-items-center justify-content-between">
+                                        Low Stock Alerts
+                                    </h5>
+                                    <table class="table table-striped text-center border">
+                                        <thead class="thead-primary">
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Stock Quantity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for product in low_stock_products %}
+                                            <tr>
+                                                <td>{{ product.name }}</td>
+                                                <td>{{ product.stock_quantity }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="sales-report" role="tabpanel" aria-labelledby="sales-report-tab">
+                    <div class="container action d-flex gap-2 justify-content-end">
+                        <button type="submit" class="btn btn-primary width-10 mb-2" data-bs-toggle="modal" data-bs-target="#dateFilterModal">Filter</button>
+                    </div>
+
+                    <div class="container-fluid row w-100 d-flex align-items-center justify-content-center" id="dateFilterContainer">
+                        {% include 'components/partials/date_filter_p.html' %}
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="inventory-report" role="tabpanel" aria-labelledby="inventory-report-tab">
+                    <div class="container-fluid row w-100 d-flex align-items-center justify-content-center">
+                        <div class="container col-10 mb-3">
+                            <div class="card rounded-4 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title d-flex align-items-center justify-content-between">
+                                        Stock Levels
+                                    </h5>
+                                    <table class="table table-striped text-center border">
+                                        {% if products %}
+                                        <thead class="thead-primary">
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Stock Quantity</th>
+                                                <th>Stock Value</th>
+                                                <th>Low Stock</th>
+                                                <th>Out of Stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for product in products %}
+                                            <tr>
+                                                <td>{{ product.name }}</td>
+                                                <td>{{ product.stock_quantity }}</td>
+                                                <td>{{ business.currency_symbol }}{{ product.stock_value|floatformat:2 }}</td>
+                                                <td>
+                                                    {% if product.is_low_stock %}
+                                                        <span class="color-danger fw-bold">Yes</span>
+                                                    {% else %}
+                                                        <span class="color-success fw-bold">No</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if product.is_out_of_stock %}
+                                                        <span class="color-danger fw-bold">Yes</span>
+                                                    {% else %}
+                                                        <span class="color-success fw-bold">No</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        {% else %}
+                                        <div class="d-flex align-items-center justify-content-center p-2 rounded-3 bg-grey">
+                                            <div class="lead">Nothing to display</div>
+                                        </div>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="container col-10 mb-3">
+                            <div class="card rounded-4 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title d-flex align-items-center justify-content-between">
+                                        Category-wise Stock Summary
+                                    </h5>
+                                    <table class="table table-striped text-center border">
+                                        {% if category_summary %}
+                                        <thead class="thead-primary">
+                                            <tr>
+                                                <th>Category</th>
+                                                <th>Total Products</th>
+                                                <th>Total Stock Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for category in category_summary %}
+                                            <tr>
+                                                <td>{{ category.name }}</td>
+                                                <td>{{ category.total_products }}</td>
+                                                <td>{{ business.currency_symbol }}
+                                                    {% if category.total_stock_value %}
+                                                        {{ category.total_stock_value|floatformat:2 }}
+                                                    {% else %}
+                                                        0
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        {% else %}
+                                        <div class="d-flex align-items-center justify-content-center p-2 rounded-3 bg-grey">
+                                            <div class="lead">Nothing to display</div>
+                                        </div>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="container col-10 mb-3">
+                            <div class="card rounded-4 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title d-flex align-items-center justify-content-between">
+                                        Stock Movement Summary (last 30 days)
+                                    </h5>
+                                    <table class="table table-striped text-center border">
+                                        {% if movement_summary %}
+                                        <thead class="thead-primary">
+                                            <tr>
+                                                <th>Movement Type</th>
+                                                <th>Total Quantity</th>
+                                                <th>Total Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for movement in movement_summary %}
+                                            <tr>
+                                                <td>{{ movement.movement_type }}</td>
+                                                <td>{{ movement.total_quantity }}</td>
+                                                <td>{{ business.currency_symbol }}
+                                                    {% if movement.total_value %}
+                                                        {{ movement.total_value|floatformat:2 }}
+                                                    {% else %}
+                                                        0
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        {% else %}
+                                        <div class="d-flex align-items-center justify-content-center p-2 rounded-3 bg-grey">
+                                            <div class="lead">Nothing to display</div>
+                                        </div>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="analytics" role="tabpanel" aria-labelledby="analytics-tab">
+                    <div class="container action d-flex gap-2 justify-content-end">
+                        <button type="submit" class="btn btn-danger width-10 mb-2" data-bs-toggle="modal" data-bs-target="#dateFilterAnalyticsModal">Filter</button>
+                    </div>
+
+                    <div class="container-fluid row w-100 d-flex align-items-center justify-content-center" id="dateFilterAnalyticsContainer">
+                        {% include 'components/partials/date_filter_analytics_p.html' %}
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="receipts" role="tabpanel" aria-labelledby="receipts-tab">
+                    <table class="table table-striped text-center border">
+                        <thead class="thead-primary">
+                            <tr>
+                                <th>ID</th>
+                                <th>Receipt Number</th>
+                                <th>Seller Name</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if sales %}
+                                {% for sale in sales %}
+                                    <tr>
+                                        <td>{{ sale.id }}</td>
+                                        <td>{{ sale.sale_id }}</td>
+                                        <td>{{ sale.cashier.user.get_full_name }}</td>
+                                        <td>{{ business.currency_symbol }}{{ sale.total_amount }}</td>
+                                        <td>
+                                            <form
+                                            hx-post="{% url 'reports:receipt_info' sale.sale_id %}"
+                                            hx-target="#receiptContainer">
+                                                {% csrf_token %}
+                                                <button type='submit' class="btn btn-sm info action" data-bs-toggle="modal" data-bs-target="#infoModal"><i class="bi bi-info-circle"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <p class="lead fw-bold">Total</p>
+                                </td>
+                                <td>
+                                    <p class="lead fw-bold">{{ business.currency_symbol }}{{ total_sales.total|floatformat:2 }}</p>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+{% include 'components/dashboard/reportModal.html' %}
+{% endblock content %}
+
+{% block customJS %}
+<script type="application/javascript" src="{% static 'utils/ext/chart.js' %}"></script>
+<!-- ############################################################# -->
+<!--                SALES SUMMARY               -->
+<!-- ############################################################# -->
+<script>
+    const period = []
+    const summaryTotal = []
+    const summaryCount = [] 
+    {%for period, summary in sales_summary.items %}
+        period.push('{{ period }}')
+        summaryTotal.push('{{ summary.total }}')
+        summaryCount.push('{{ summary.count }}') 
+    {% endfor %}
+
+    const salesSummaryCtx = document.getElementById('salesSummaryChart').getContext('2d')
+    const salesSummaryChart = new Chart(salesSummaryCtx, {
+        type: 'bar',
+        data: {
+            labels: period,
+            datasets: [{
+                    label: 'Total Sales',
+                    data: summaryTotal,
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Total Transactions',
+                    data: summaryCount,
+                    backgroundColor: 'rgba(54, 162, 235, 1)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]},
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>
+<!-- ############################################################# -->
+<!--                TOP PRODUCTS                -->
+<!-- ############################################################# -->
+<script>
+    const productName = []
+    const productTotalSold = []
+    const productRevenue = [] 
+    {% for product in top_products %}
+        productName.push('{{ product.name }}')
+        productTotalSold.push('{{ product.total_sold }}')
+        productRevenue.push('{{ product.revenue }}') 
+    {% endfor %}
+    const topProductsCtx = document.getElementById('topProductsChart').getContext('2d')
+    const topProductsChart = new Chart(topProductsCtx, {
+        type: 'pie',
+        data: {
+            labels: productName,
+            datasets: [{
+                label: 'Total Sold',
+                data: productTotalSold,
+                backgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0',
+                    '#9966FF'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+        }
+    })
+
+</script>
+
+<script>
+    const data = {{daily_data|safe}}
+    const dailyCtx = document.getElementById('financialTrendChart').getContext('2d');
+    new Chart(dailyCtx, {
+        type: 'line',
+        data: {
+            labels: data.map(item=>item.date),
+            datasets: [{
+                label: 'Revenue',
+                data: data.map(item=>item.revenue),
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Expenses',
+                data: data.map(item=>item.expenses),
+                borderColor: '#f44336',
+                backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Net Profit',
+                data: data.map(item=>item.net_profit),
+                borderColor: '#2196F3',
+                backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+
+    // Expense category chart
+    const expense_category = []
+    const total = []
+    {% for category in top_expense_categories %}
+    expense_category.push('{{category.name}}')
+    total.push('{{category.total_amount}}')
+    {% endfor %}
+    const expenseCtx = document.getElementById('expenseCategoriesChart').getContext('2d');
+    new Chart(expenseCtx, {
+        type: 'doughnut',
+        data: {
+            labels: expense_category,
+            datasets: [{
+                data: total,
+                backgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0',
+                    '#9966FF'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+</script>
+{% endblock customJS %}

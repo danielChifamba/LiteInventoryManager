@@ -1,0 +1,16 @@
+<div class="modal fade" id=infoModal tabindex=-1><div class="modal-dialog modal-dialog-centered modal-lg"><div class=modal-content id=receiptContainer>{% include 'components/partials/receipt_p.html' %}</div></div></div><div class="modal fade" id=dateFilterModal tabindex=-1><div class="modal-dialog modal-dialog-centered modal-sm"><div class=modal-content><div class=modal-header><h5 class=modal-title>Filter</h5><button type=button class=btn-close data-bs-dismiss=modal></button></div><div class=modal-body><form class=form-inline hx-post="{% url 'reports:dateFilter' %}" hx-target=#dateFilterContainer>{% csrf_token %}
+<label for=date_from class=mr-2>Date From:</label>
+<input type=date id=date_from name=date_from value="{{ date_from }}" class="form-control mb-2">
+<label for=date_to class=mr-2>Date To:</label>
+<input type=date id=date_to name=date_to value="{{ date_to }}" class="form-control mb-2">
+<button class="btn btn-primary w-100" data-bs-dismiss=modal>Filter</button></form></div></div></div></div><div class="modal fade" id=dateFilterReportsModal tabindex=-1><div class="modal-dialog modal-dialog-centered modal-sm"><div class=modal-content><div class=modal-header><h5 class=modal-title>Filter Report</h5><button type=button class=btn-close data-bs-dismiss=modal></button></div><div class=modal-body><form class=form-inline method=post action="{% url 'reports:downloadComprehensiveReport' %}">{% csrf_token %}
+<label for=date_from class=mr-2>Date From:</label>
+<input type=date id=date_from name=date_from value="{{ date_from }}" class="form-control mb-2">
+<label for=date_to class=mr-2>Date To:</label>
+<input type=date id=date_to name=date_to value="{{ date_to }}" class="form-control mb-2">
+<button class="btn btn-primary w-100" data-bs-dismiss=modal>Get Report</button></form></div></div></div></div><div class="modal fade" id=dateFilterAnalyticsModal tabindex=-1><div class="modal-dialog modal-dialog-centered modal-sm"><div class=modal-content><div class=modal-header><h5 class=modal-title>Filter</h5><button type=button class=btn-close data-bs-dismiss=modal></button></div><div class=modal-body><form class=form-inline hx-post="{% url 'reports:dateAnalyticsFilter' %}" hx-target=#dateFilterAnalyticsContainer>{% csrf_token %}
+<label for=date_from class=mr-2>Date From:</label>
+<input type=date id=date_from name=date_from value="{{ date_from }}" class="form-control mb-2">
+<label for=date_to class=mr-2>Date To:</label>
+<input type=date id=date_to name=date_to value="{{ date_to }}" class="form-control mb-2">
+<button class="btn btn-danger w-100" data-bs-dismiss=modal>Filter</button></form></div></div></div></div>

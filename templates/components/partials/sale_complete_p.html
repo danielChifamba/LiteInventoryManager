@@ -1,0 +1,56 @@
+<script>document.getElementById("cart-content").innerHTML=`
+        <div class="cart-items">
+            <div class="text-center text-muted py-4">
+                Cart is empty<br>
+                <small>Add products to start a sale</small>
+            </div>
+        </div>
+        <div class="cart-total" style="display: none;"></div>
+    `,document.getElementById("checkoutBtn").disabled=!0,document.getElementById("receiptContent").innerHTML=`
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h4>SALES RECEIPT</h4>
+            <p>Transaction: {{ sale.sale_id }}</p>
+            {% if sale.showTime %}
+            <p>Date: {{ sale.created_at }}</p>
+            {% endif %}
+            {% if sale.showName %}
+            <p>Seller: {{ sale.cashier_name }}</p>
+            {% endif %}
+        </div>
+        
+        <div style="border-bottom: 1px dashed #ccc; margin: 15px 0;"></div>
+        
+        <div>
+            {% for item in sale.items %}
+            <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                <span>{{ item.product_name }} x{{ item.quantity }}</span>
+                <span>\${{ item.total_price|floatformat:2 }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div style="border-bottom: 1px dashed #ccc; margin: 15px 0;"></div>
+        
+        <div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Subtotal:</span>
+                <span>\${{ sale.subtotal|floatformat:2 }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Tax:</span>
+                <span>\${{ sale.tax_amount|floatformat:2 }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                <span>TOTAL:</span>
+                <span>\${{ sale.total_amount|floatformat:2 }}</span>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <p>Payment Method: {{ sale.payment_method|upper }}</p>
+            <p style="margin-top: 15px; font-size: 12px;">
+                {% if sale.showThanks %}{{ sale.thanksNote }}<br>{% endif %}
+                Please keep this receipt for your records.
+            </p>
+        </div>
+    `,setTimeout(()=>{const e=new bootstrap.Modal(document.getElementById("receiptModal"));e.show()},100),htmx.ajax("GET",'{% url "pos:htmx_products" %}',"#productsGrid")</script>

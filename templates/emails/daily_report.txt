@@ -1,0 +1,40 @@
+{{ business.name|default:"POS System" }} - Daily Report
+{{ report_date }}
+================================================================
+
+SALES SUMMARY
+-------------
+Total Sales: ${{ daily_report.total_sales|floatformat:2 }}
+Total Transactions: {{ daily_report.total_transactions }}
+Total Expenses: ${{ daily_report.total_expenses|floatformat:2 }}
+Net Profit: ${{ report_data.net_profit|floatformat:2 }}
+
+PAYMENT BREAKDOWN
+-----------------
+Cash Sales: ${{ daily_report.cash_sales|floatformat:2 }}
+Card Sales: ${{ daily_report.card_sales|floatformat:2 }}
+Mobile Sales: ${{ daily_report.mobile_sales|floatformat:2 }}
+
+{% if daily_report.top_selling_product %}
+TOP SELLING PRODUCT
+-------------------
+{{ daily_report.top_selling_product.name }}
+{% endif %}
+
+{% if week_comparison %}
+WEEK COMPARISON
+---------------
+Sales Change: {% if week_comparison.sales_change >= 0 %}+{% endif %}{{ week_comparison.sales_change|floatformat:1 }}%
+Last Week Sales: ${{ week_comparison.last_week_sales|floatformat:2 }}
+{% endif %}
+
+{% if low_stock_count > 0 or recent_alerts > 0 %}
+ALERTS
+------
+{% if low_stock_count > 0 %}• {{ low_stock_count }} product{{ low_stock_count|pluralize }} with low stock{% endif %}
+{% if recent_alerts > 0 %}• {{ recent_alerts }} unread alert{{ recent_alerts|pluralize }}{% endif %}
+{% endif %}
+
+================================================================
+Report generated: {{ daily_report.created_at|date:"M d, Y H:i" }}
+{{ business.name|default:"Your Business" }} - Keep growing!

@@ -1,0 +1,13 @@
+{% load extras %}<div class=cart-items id=cartItems>{% if cart %}
+{% for sku, item in cart.items %}<div class=cart-item><div class=flex-grow-1><div class=fw-bold>{{ item.name }}</div><div class="text-muted small">${{ item.price|floatformat:2 }} each</div></div><div class=quantity-controls><button class=qty-btn hx-post="{% url 'pos:htmx_update_cart' sku %}" hx-target=#cart-content hx-swap=innerHTML hx-vals='{"action": "decrease"}' hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<i class="bi bi-dash"></i>
+</button>
+<span class="mx-2 fw-bold">{{ item.quantity }}</span>
+<button class=qty-btn hx-post="{% url 'pos:htmx_update_cart' sku %}" hx-target=#cart-content hx-swap=innerHTML hx-vals='{"action": "increase"}' {% if item.quantity>= item.max_stock %}disabled{% endif %}
+hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<i class="bi bi-plus"></i></button></div><div class=text-end><div class=fw-bold>${{ item.price|floatformat:2|mul:item.quantity }}</div><button class=remove-btn hx-post="{% url 'pos:htmx_remove_from_cart' sku %}" hx-target=#cart-content hx-swap=innerHTML hx-confirm="Remove {{ item.name }} from cart?" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<i class="bi bi-trash"></i></button></div></div>{% endfor %}
+{% else %}<div class="text-center text-muted py-4">Cart is empty<br><small>Add products to start a sale</small></div>{% endif %}</div>{% if cart_totals.item_count > 0 %}<div class=cart-total id=cartTotal><div class=total-row><span>Subtotal:</span>
+<span>${{ cart_totals.subtotal|floatformat:2 }}</span></div><div class=total-row><span>Tax ({{ business.tax_rate }}%):</span>
+<span>${{ cart_totals.tax_amount|floatformat:2 }}</span></div><div class="total-row total-final"><span>Total:</span>
+<span>${{ cart_totals.total|floatformat:2 }}</span></div></div><script>document.getElementById("checkoutBtn").disabled=!1</script>{% else %}<div class=cart-total id=cartTotal style=display:none></div><script>document.getElementById("checkoutBtn").disabled=!0</script>{% endif %}

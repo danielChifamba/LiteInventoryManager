@@ -1,0 +1,8 @@
+{% if products %}
+{% for product in products %}<div class="product-card {% if product.is_out_of_stock %}out-of-stock{% elif product.is_low_stock %}low-stock{% endif %}" {% if not product.is_out_of_stock %} hx-post="{% url 'pos:htmx_add_to_cart' product.sku %}" hx-target=#cart-content hx-swap=innerHTML hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' {% endif %}><div class="product-name fw-bold mb-2">{{ product.name }}</div><div class="product-price fs-5 mb-2">${{ product.selling_price|floatformat:2 }}</div><div class="product-stock text-muted mb-2">Stock: {{ product.stock_quantity }}
+{% if product.is_low_stock and not product.is_out_of_stock %}
+<i class="bi bi-exclamation-triangle text-warning"></i>
+{% elif product.is_out_of_stock %}
+<i class="bi bi-x-circle text-danger"></i>
+{% endif %}</div><div class="product-sku small text-muted">{{ product.sku }}</div>{% if product.is_out_of_stock %}<div class="text-danger small mt-2">Out of Stock</div>{% endif %}</div>{% endfor %}
+{% else %}<div class="col-12 text-center text-muted py-4"><i class="bi bi-box-seam mb-3 fs-1"></i><p>No products found</div>{% endif %}
